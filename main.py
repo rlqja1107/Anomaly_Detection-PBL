@@ -7,8 +7,7 @@
       "name": "anogan.ipynb",
       "provenance": [],
       "collapsed_sections": [],
-      "authorship_tag": "ABX9TyOlUsZmIv786MOaGBR4tiVI",
-      "include_colab_link": true
+      "authorship_tag": "ABX9TyOlUsZmIv786MOaGBR4tiVI"
     },
     "kernelspec": {
       "display_name": "Python 3",
@@ -19,16 +18,6 @@
     }
   },
   "cells": [
-    {
-      "cell_type": "markdown",
-      "metadata": {
-        "id": "view-in-github",
-        "colab_type": "text"
-      },
-      "source": [
-        "<a href=\"https://colab.research.google.com/github/rlqja1107/Anomaly_Detection-PBL-/blob/main/main.py\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
-      ]
-    },
     {
       "cell_type": "code",
       "metadata": {
