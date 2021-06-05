@@ -1,5 +1,9 @@
 ## AnoGan Model를 이용하여 Detection하기  
 
+## Code Reference  
+
+[https://github.com/GunhoChoi/AnoGAN-Pytorch/blob/master/Mnist_version/AnoGAN_MNIST.ipynb](https://github.com/GunhoChoi/AnoGAN-Pytorch/blob/master/Mnist_version/AnoGAN_MNIST.ipynb)
+
 ### 간략한 모델 설명  
 
 <img width = '500' src = 'https://user-images.githubusercontent.com/55014424/119292372-37593000-bc8b-11eb-81b3-a616b7ad45db.png'>  
