@@ -34,12 +34,20 @@ Recall : 0.96
 (전체 Score에서 중간값을 Threshold로 사용)   
 #### 0이 아닌 숫자 Generate  
 
+<p>  
+    
 <img width = '100' src = 'https://user-images.githubusercontent.com/55014424/119293266-0417a080-bc8d-11eb-8f7d-89aab0b52bce.png'>  
 
 <img width = '100' src = 'https://user-images.githubusercontent.com/55014424/119293329-28737d00-bc8d-11eb-8890-3c14a98e46a0.png'>  
 
+</p>  
+
 #### 0의 숫자를 Generate  
 
+<p>  
+    
 <img width = '100' src = 'https://user-images.githubusercontent.com/55014424/119293408-55c02b00-bc8d-11eb-84a1-d93bdc7e1741.png'>
 
 <img width = '100' src = 'https://user-images.githubusercontent.com/55014424/119293448-6670a100-bc8d-11eb-8529-e86f2af378f6.png'>  
+
+</p>
