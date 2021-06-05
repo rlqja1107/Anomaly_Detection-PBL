@@ -30,12 +30,17 @@ config = {
 
 ### Result  
 
-|AUC|Recall|Precision||
-|:---:|:---:|:---:|:---:|
-|0.95|0.892857|0.99
-AUC : 0.87  
-Recall : 0.96
-(전체 Score에서 중간값을 Threshold로 사용)   
+|AUC|Recall|Precision|F1 Score|  
+|:---:|:---:|:---:|:---:|  
+|0.95|0.892857|0.99|0.94|
+
+(ROC Curve를 이용하여 Threshold 설정)  
+
+* ROC Curve  
+  
+<img width = '300' src = 'https://user-images.githubusercontent.com/55014424/120881533-b85de300-c60c-11eb-98be-65bbd9562111.png'>  
+
+
 #### 0이 아닌 숫자 Generate  
 
 <p>  
