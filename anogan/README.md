@@ -60,3 +60,13 @@ config = {
 <img width = '100' src = 'https://user-images.githubusercontent.com/55014424/119293448-6670a100-bc8d-11eb-8529-e86f2af378f6.png'>  
 
 </p>
+
+#### 비정상(0이 아닌 숫자)인데 정상(0)이라고 판별한 사진  
+
+<p>
+    
+<img width = '100' src = 'https://user-images.githubusercontent.com/55014424/120881765-77ff6480-c60e-11eb-8a3c-55f4fb7c415c.png'>
+
+<img width = '100' src = 'https://user-images.githubusercontent.com/55014424/120881779-88174400-c60e-11eb-8164-51e3a7281384.png'>  
+    
+    
