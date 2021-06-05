@@ -29,6 +29,10 @@ config = {
 **Residual Loss** + **Discrimination Loss**
 
 ### Result  
+
+|AUC|Recall|Precision||
+|:---:|:---:|:---:|:---:|
+|0.95|0.892857|0.99
 AUC : 0.87  
 Recall : 0.96
 (전체 Score에서 중간값을 Threshold로 사용)   
