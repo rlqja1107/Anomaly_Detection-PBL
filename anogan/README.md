@@ -43,23 +43,7 @@ config = {
 * ROC Curve  
   
 <img width = '300' src = 'https://user-images.githubusercontent.com/55014424/120881533-b85de300-c60c-11eb-98be-65bbd9562111.png'>
-
-### 추가 실험  
-
-||Discrimination Loss|Residual Loss|  
-|:---:|:---:|:---:|    
-|Anomaly Score|825.27|57.57|   
-|Normal Score|399.1|0.99|23.38|    
-
-실험 1에서의 결과값을 나타낸다. Anomaly인 경우 Discrimination Loss가 높아서 Fake와 Real을 잘 분간하지 못한다. 기존에는 Discrimination Loss를 0.01을 곱하여 Anomaly Score를 내지만, 이보다는 각 Loss의 정규화를 통해 Residual Loss와 Discrimination Loss를 모두 이용한다. 단지 Residual Loss와 Discrimination Loss의 비중을 달리하여 실험을 진행한다.  
-
-* 실험 결과  
-Discrimination과 Residual Loss의 비율을 달리한 결과  
   
-<img width = '400' src = 'https://user-images.githubusercontent.com/55014424/120974197-cd707880-c7aa-11eb-9e37-d9b09aacfb1e.png'>
-  
-
-
 #### 0이 아닌 숫자 Generate  
 
 <p>  
@@ -86,6 +70,24 @@ Discrimination과 Residual Loss의 비율을 달리한 결과
     
 <img width = '100' src = 'https://user-images.githubusercontent.com/55014424/120881765-77ff6480-c60e-11eb-8a3c-55f4fb7c415c.png'>
 
-<img width = '100' src = 'https://user-images.githubusercontent.com/55014424/120881779-88174400-c60e-11eb-8164-51e3a7281384.png'>  
+<img width = '100' src = 'https://user-images.githubusercontent.com/55014424/120881779-88174400-c60e-11eb-8164-51e3a7281384.png'>    
+
+### 추가 실험  
+
+||Discrimination Loss|Residual Loss|  
+|:---:|:---:|:---:|    
+|Anomaly Score|825.27|57.57|   
+|Normal Score|399.1|0.99|23.38|    
+
+실험 1에서의 결과값을 나타낸다. Anomaly인 경우 Discrimination Loss가 높아서 Fake와 Real을 잘 분간하지 못한다. 기존에는 Discrimination Loss를 0.01을 곱하여 Anomaly Score를 내지만, 이보다는 각 Loss의 정규화를 통해 Residual Loss와 Discrimination Loss를 모두 이용한다. 단지 Residual Loss와 Discrimination Loss의 비중을 달리하여 실험을 진행한다.  
+
+* 실험 결과  
+Discrimination과 Residual Loss의 비율을 달리한 결과  
+  
+<img width = '400' src = 'https://user-images.githubusercontent.com/55014424/120974197-cd707880-c7aa-11eb-9e37-d9b09aacfb1e.png'>
+  
+
+
+
     
     
