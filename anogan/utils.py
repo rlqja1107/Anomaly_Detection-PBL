@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from numpy.ma import default_fill_value
 import torch
 import torch.nn as nn
 from timeit import default_timer as timer
@@ -9,6 +10,10 @@ import numpy as np
 import pandas as pd
 from sklearn import metrics
 from sklearn.metrics import confusion_matrix, roc_auc_score
+from sklearn import metrics
+from math import sqrt 
+
+
 def image_check(gen_fake):
     img = gen_fake.data.numpy()
     for i in range(2):
@@ -39,7 +44,66 @@ def fit_latent_space(z_optimizer, generator, z, test_data, discriminator, lambda
     print("Fit Latent Space Time : {:4f}".format(timer()-start))
     return z
 
-def test(data, generator, discriminator, lambdas, normal_num, mean_median):
+def normalization(df, standard):
+    if standard == 'standard':
+        disc_mean = np.mean(df['disc_loss'])
+        disc_std = np.std(df['disc_loss'], ddof = 1)
+        score_mean = np.mean(df['residual'])
+        score_std = np.std(df['residual'], ddof = 1)
+        df['residual'] = (df['residual'] - score_mean) / score_std
+        df['disc_loss'] = (df['disc_loss'] - disc_mean) / disc_std
+    else:
+        disc_min = np.min(df['disc_loss'])
+        disc_max = np.max(df['disc_loss'])
+        score_min = np.min(df['residual'])
+        score_max = np.max(df['residual'])
+        df['residual'] = (df['residual'] - score_min) / (score_max-score_min)
+        df['disc_loss'] = (df['disc_loss'] - disc_min) / (disc_max - disc_min)
+
+def metric_result(df):
+    
+    ratio = [0,0.0001, 0.001, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.999, 1]
+    disc_r, res_r, thres,au, re, pre, f1 = [],[],[],[],[],[],[]
+    for r in ratio:
+        df['ano_score'] = (1-r)* df['residual'] + r*df['disc_loss']
+        fpr, tpr, thresholds = metrics.roc_curve(df['y'].tolist(), df['ano_score'].tolist(), pos_label=1)
+        dist = []
+        min_idx = -1
+        min_dist = 1000.0
+        for i in range(len(fpr)):
+            distance = sqrt((fpr[i]-0.0)**2 + (tpr[i]-1.0)**2)
+            dist.append(distance)
+            if distance < min_dist:
+                min_idx = i
+                min_dist = distance
+        df['predict_y'] = df['ano_score'].apply(lambda x:1 if x>thresholds[min_idx] else 0)
+        TN, FP, FN, TP = confusion_matrix(df['y'].tolist(), df['predict_y'].tolist(), labels = [0,1]).ravel()
+        auc = metrics.auc(fpr, tpr)
+        eps = 10e-5
+        precision = TN/(TN+FN+eps)
+        recall = TN/(TN+FP+eps)
+        f1score = (2*precision*recall)/(precision+recall)
+        disc_r.append(r)
+        res_r.append(1-r)
+        au.append(auc)
+        re.append(recall)
+        pre.append(precision)
+        f1.append(f1score)
+        thres.append(thresholds[min_idx])
+    metric = pd.DataFrame(np.asarray([disc_r,res_r, thres, au,re,pre,f1]).T, columns = ['Dis Ratio', 'Residual', 'Threshold','AUC', 'Recall', 'Precision', 'F1'])
+    return metric
+
+def print_result(df, metric):
+    print("-------------각 Network에서의 Anomaly Score의 평균-------------")
+    print("Discrimination의 Anomaly score : {:4f}".format(np.mean(df[df['y']==1]['disc_loss'])))
+    print("Discrimination의 Normal score : {:4f}".format(np.mean(df[df['y']==0.0]['disc_loss'])))
+    print("Residual Anomaly score : {:4f}".format(np.mean(df[df['y']==1]['residual'])))
+    print("Residual Normal score : {:4f}".format(np.mean(df[df['y']==0.0]['residual'])))
+    print("-------------Discrimination과 Residual 비율에 따른 metric-------------")
+    print(metric)
+
+
+def test(data, generator, discriminator, lambdas, normal_num, standard):
     z = Variable(init.normal_(torch.zeros(len(data.test_dataset),100).cuda(),mean=0,std=0.1),requires_grad=True)
     z_optimizer = torch.optim.Adam([z],lr=1e-4)
     gen_fake = generator(z)
@@ -55,36 +119,18 @@ def test(data, generator, discriminator, lambdas, normal_num, mean_median):
     gen_fake_flatten = gen_fake.view(gen_fake.shape[0],-1)
     resiudal_loss = torch.sum(torch.abs(test_flatten-gen_fake_flatten), axis = 1)
     disc_loss = torch.sum(torch.abs(x_feature-G_z_feature), axis = 1)
-    total_loss = (1-lambdas)*resiudal_loss + lambdas*disc_loss
     y = data.test_dataset.y.numpy().squeeze(1)
-    total_loss = total_loss.detach().cpu().numpy()
-    dat = np.vstack([y,total_loss]).T
-
-    df = pd.DataFrame(dat, columns = ['y', 'score'])
-    print("Anomaly의 평균 score : {:4f}".format(np.mean(df[df['y']!=normal_num]['score'])))
-    print("Normal score의 평균 : {:4f}".format(np.mean(df[df['y']==normal_num]['score'])))
-    # Noraml이면 T Abnormal이면 F
-    df['y'] = df['y'].apply(lambda x:1 if x==normal_num else 0)
-
-    if mean_median == 'median':
-        threshold = np.median(df['score'])
-    else:
-        threshold = np.mean(df['score'])
-    df['predict_y'] = df['score'].apply(lambda x:0 if x>threshold else 1)
-
-
-    TN, FP, FN, TP = confusion_matrix(df['y'].tolist(), df['predict_y'].tolist()).ravel()
+    dat = np.vstack([y,resiudal_loss.detach().cpu().numpy()]).T
+    df = pd.DataFrame(dat, columns = ['y', 'residual'])
+    df['y'] = df['y'].apply(lambda x:1 if x!=0.0 else 0)
+    df['disc_loss'] = disc_loss.detach().cpu().numpy()
+    # Normalize
+    normalization(df, standard)
     
-    
-    print("AUC: {:4f}".format(roc_auc_score(df['y'].tolist(), df['predict_y'].tolist())))
-    print("Threshold : {:4f}".format(threshold))
-    eps = 10e-5
-    precision = TP/(TP+FP+eps)
-    recall = TP/(TP+FN+eps)
-    f1score = 2*precision*recall/(precision+recall)
-    print("Precision : {:4f}, Recall : {:4f}, F1: {:4f}".format(precision, recall, f1score))
-    print("---------------------------------------------------------------------")
-    print("TP : {}, TN :{}, FP : {}, FN : {}".format(TP,TN,FP,FN))
+    metric_df = metric_result(df)
+
+    print_result(df, metric_df)
+
 
 def train(config, generator, discriminator, train_loader):
     loss_func = nn.MSELoss()
